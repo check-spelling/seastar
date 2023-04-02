@@ -244,7 +244,7 @@ namespace rpc {
       // - make pit.done resolve it->next (some time later)
       // - resolve "it"'s continuation right now
       //
-      // The latter is achieved by resolving pit.done immediatelly, the former
+      // The latter is achieved by resolving pit.done immediately, the former
       // by moving it.done into pit.done. For simplicity (verging on obscurity?)
       // both done's are just swapped and "it" resolves its new promise
 
@@ -294,7 +294,7 @@ namespace rpc {
           return std::exchange(_outgoing_queue_ready, d.done.get_future()).then([this, p = std::move(p)] () mutable {
               _outgoing_queue_size--;
               if (__builtin_expect(!p->is_linked(), false)) {
-                  // If withdrawn the entry is unlinked and this lambda is fired right at once
+                  // If withdrawn the entry is unliked and this lambda is fired right at once
                   return make_ready_future<>();
               }
 
@@ -716,7 +716,7 @@ namespace rpc {
   }
 
   // This is the enlightened copy of the connection::send() method. Its intention is to
-  // keep a dummy entry in front of the queue while connect+negotiate is happenning so
+  // keep a dummy entry in front of the queue while connect+negotiate is happening so
   // that all subsequent entries could abort on timeout or explicit cancellation.
   void client::enqueue_zero_frame() {
       if (_error) {
@@ -906,10 +906,10 @@ namespace rpc {
               struct isolation_function_visitor {
                   isolation_function_visitor(const sstring& isolation_cookie) :
                         _isolation_cookie(isolation_cookie) { }
-                  future<isolation_config> operator() (resource_limits::syncronous_isolation_function f) const {
+                  future<isolation_config> operator() (resource_limits::synchronous_isolation_function f) const {
                       return futurize_invoke(f, _isolation_cookie);
                   }
-                  future<isolation_config> operator() (resource_limits::asyncronous_isolation_function f) const {
+                  future<isolation_config> operator() (resource_limits::asynchronous_isolation_function f) const {
                       return f(_isolation_cookie);
                   }
               private:
