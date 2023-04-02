@@ -227,7 +227,7 @@ public:
         uint64_t fstream_read_bytes = 0;
         uint64_t fstream_reads_blocked = 0;
         uint64_t fstream_read_bytes_blocked = 0;
-        uint64_t fstream_read_aheads_discarded = 0;
+        uint64_t fstream_readaheads_discarded = 0;
         uint64_t fstream_read_ahead_discarded_bytes = 0;
     };
     /// Scheduling statistics.
