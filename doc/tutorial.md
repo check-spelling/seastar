@@ -413,7 +413,7 @@ the return value of the coroutine. From the coroutine's perspective, it is able 
 using `co_yield` without "leaving" the coroutine. A function producing a sequence of values can be named "generator".
 But unlike the regular coroutine which returns a single `seastar::future<T>`, a generator should return
 `seastar::coroutine::experimental::generator<T>`. Please note, `generator<T>` is still at its early stage of developing,
-the public interface this template is subject to change before it is stablized enough.
+the public interface this template is subject to change before it is stabilized enough.
 
 Example
 
