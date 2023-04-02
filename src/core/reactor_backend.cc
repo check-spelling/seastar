@@ -228,21 +228,21 @@ aio_storage_context::submit_work() {
 }
 
 void aio_storage_context::schedule_retry() {
-    // loop until both _pending_aio_retry and _aio_retries are empty.
-    // While retrying _aio_retries, new retries may be queued onto _pending_aio_retry.
+    // loop until both _pending_aio_retry and _aio_rentries are empty.
+    // While retrying _aio_rentries, new rentries may be queued onto _pending_aio_retry.
     _pending_aio_retry_fut = do_until([this] {
-        if (_aio_retries.empty()) {
+        if (_aio_rentries.empty()) {
             if (_pending_aio_retry.empty()) {
                 return true;
             }
             // _pending_aio_retry, holding a batch of new iocbs to retry,
-            // is swapped with the empty _aio_retries.
-            std::swap(_aio_retries, _pending_aio_retry);
+            // is swapped with the empty _aio_rentries.
+            std::swap(_aio_rentries, _pending_aio_retry);
         }
         return false;
     }, [this] {
         return _r._thread_pool->submit<syscall_result<int>>([this] () mutable {
-            auto r = io_submit(_io_context, _aio_retries.size(), _aio_retries.data());
+            auto r = io_submit(_io_context, _aio_rentries.size(), _aio_rentries.data());
             return wrap_syscall<int>(r);
         }).then_wrapped([this] (future<syscall_result<int>> f) {
             // If submit failed, just log the error and exit the loop.
@@ -253,7 +253,7 @@ void aio_storage_context::schedule_retry() {
                 return;
             }
             auto result = f.get0();
-            auto iocbs = _aio_retries.data();
+            auto iocbs = _aio_rentries.data();
             size_t nr_consumed = 0;
             if (result.result == -1) {
                 try {
@@ -265,7 +265,7 @@ void aio_storage_context::schedule_retry() {
             } else {
                 nr_consumed = result.result;
             }
-            _aio_retries.erase(_aio_retries.begin(), _aio_retries.begin() + nr_consumed);
+            _aio_rentries.erase(_aio_rentries.begin(), _aio_rentries.begin() + nr_consumed);
         });
     });
 }

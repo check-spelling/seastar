@@ -78,13 +78,13 @@ class aio_storage_context {
     iocb_pool _iocb_pool;
     size_t handle_aio_error(internal::linux_abi::iocb* iocb, int ec);
     using pending_aio_retry_t = boost::container::static_vector<internal::linux_abi::iocb*, max_aio>;
-    pending_aio_retry_t _pending_aio_retry; // Pending retries iocbs
-    pending_aio_retry_t _aio_retries;       // Currently retried iocbs
+    pending_aio_retry_t _pending_aio_retry; // Pending rentries iocbs
+    pending_aio_retry_t _aio_rentries;       // Currently retried iocbs
     future<> _pending_aio_retry_fut = make_ready_future<>();
     internal::linux_abi::io_event _ev_buffer[max_aio];
 
     bool need_to_retry() const noexcept {
-        return !_pending_aio_retry.empty() || !_aio_retries.empty();
+        return !_pending_aio_retry.empty() || !_aio_rentries.empty();
     }
 
     bool retry_in_progress() const noexcept {
