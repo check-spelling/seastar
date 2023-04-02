@@ -294,7 +294,7 @@ namespace rpc {
           return std::exchange(_outgoing_queue_ready, d.done.get_future()).then([this, p = std::move(p)] () mutable {
               _outgoing_queue_size--;
               if (__builtin_expect(!p->is_linked(), false)) {
-                  // If withdrawn the entry is unlinked and this lambda is fired right at once
+                  // If withdrawn the entry is unliked and this lambda is fired right at once
                   return make_ready_future<>();
               }
 
